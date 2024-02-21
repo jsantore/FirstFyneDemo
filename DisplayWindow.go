@@ -2,6 +2,7 @@ package main
 
 import (
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -30,4 +31,23 @@ func CreateListItem() fyne.CanvasObject {
 func UpdateListItem(itemNum widget.ListItemID, listItem fyne.CanvasObject) {
 	UnivName := (*window.UniversitiesData)[itemNum].Name
 	listItem.(*widget.Label).SetText(UnivName)
+}
+
+func BuildWindow(window *DisplayWindow, mainWindow fyne.Window) {
+	window.UniversityInput = widget.NewEntry()
+	window.UniversityInput.SetPlaceHolder("Enter University Name to search for...")
+	getDataButton := widget.NewButton("Get University Data", getUniversityData)
+	window.DataDisplay = widget.NewList(GetDataLen, CreateListItem, UpdateListItem)
+	topPane := container.NewVBox(window.UniversityInput, getDataButton)
+	leftPane := container.NewVSplit(topPane, window.DataDisplay)
+	label1 := widget.NewLabel("Country:")
+	countryField := widget.NewEntry()
+	countryField.SetPlaceHolder("Country will appear here")
+	label2 := widget.NewLabel("Website:")
+	webSiteField := widget.NewEntry()
+	webSiteField.SetPlaceHolder("Website will appear here")
+	rightPane := container.NewGridWithColumns(2, label1, countryField, label2, webSiteField)
+	contentPane := container.NewHSplit(leftPane, rightPane)
+	mainWindow.SetContent(contentPane)
+	mainWindow.Resize(fyne.NewSize(900, 900))
 }
